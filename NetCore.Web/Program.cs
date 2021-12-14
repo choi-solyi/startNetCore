@@ -15,11 +15,14 @@ builder.Services.AddScoped<IUser, UserService>();
 //DB접속 정보, Migration 프로젝트 지정
 
 builder.Services.AddDbContext<CodeFirstDbContext>(options => {
-  options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
-    sqlServerOptionsAction:mig => mig.MigrationsAssembly(assemblyName:"NetCore.Migrations"));
+  options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 var app = builder.Build();
-
+new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
